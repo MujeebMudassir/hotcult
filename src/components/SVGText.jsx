@@ -44,7 +44,7 @@ const SVGText = ({ isVisible }) => {
         {animateText("சென்னை", 1000)}
       </h1>
 
-      <div className="absolute bottom-6 left-5 font-bold text-2xl text-center">
+      <div className="absolute bottom-6 left-5 font-bold text-[50px] text-center">
         <h1>{animateText("NAMMA", 1000)}</h1>
         <h1>{animateText("சென்னை", 1000)}</h1>
       </div>

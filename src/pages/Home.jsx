@@ -6,12 +6,11 @@ import Logo from "../assets/Hotcult-Logo.png";
 import chennaiBG from "../assets/chennaiBG.png";
 import SVGLines from "../components/SVGLines";
 import SVGText from "../components/SVGText";
-import useResponsiveTextSize from "../hooks/useResponsiveTextSize";
 
 const Home = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
-  const textSize = useResponsiveTextSize();
-  const lastLetterRef = useRef(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const lastLetterRef = useRef(null); // Reference for the last letter
   const [transformOrigin, setTransformOrigin] = useState("left bottom");
   const containerRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -33,9 +32,18 @@ const Home = () => {
       }
     };
   }, []);
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-
-
+  const getTextSize = () => {
+    if (windowWidth <= 640) return `${windowWidth / 15}px`;
+    if (windowWidth <= 1024) return `${windowWidth / 12}px`;
+    if (windowWidth <= 1250) return `${windowWidth / 15}px`;
+    return `${windowWidth / 10}px`;
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrollPosition(window.scrollY);
@@ -63,7 +71,7 @@ const Home = () => {
       const originY = rect.top + rect.height / 2;
       setTransformOrigin(`${originX}px ${originY}px`);
     }
-  }, [scrollPosition]);
+  }, [scrollPosition, windowWidth]);
 
   return (
     <div>
@@ -76,7 +84,7 @@ const Home = () => {
           <h1
             className="text-black font-[900] opacity-80 flex w-[100vw] justify-between"
             style={{
-              fontSize: textSize,
+              fontSize: getTextSize(),
             }}
           >
             {[...text].map((letter, index) => {
@@ -88,8 +96,8 @@ const Home = () => {
                 transition: "all 0.5s ease-out, opacity 0.7s ease-out",
                 fontSize:
                   scrollPosition > delay
-                    ? `${parseInt(textSize) + 60}px`
-                    : textSize,
+                    ? `${parseInt(getTextSize()) + 60}px`
+                    : getTextSize(),
                 transitionDelay: `${index * 0.1}s`,
                 ...(scrollPosition > delay && {
                   backgroundImage: `url(${letter.image})`,
@@ -120,7 +128,7 @@ const Home = () => {
         </div>
       </section>
       <section
-        className={`bg-gray-400 h-[100vh] z-10 bg-cover transition-transform duration-700 ${
+        className={` h-[100vh] z-10 bg-cover transition-transform duration-700 ${
           shouldExpandSecondSection ? "scale-100" : "scale-0"
         }`}
         style={{
@@ -130,10 +138,11 @@ const Home = () => {
       >
         <div
           ref={containerRef}
-          className="p-5 text-white relative"
+          className="p-5 text-white relative h-[100%] w-[100%]"
           style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
         >
           <SVGText isVisible={isVisible}></SVGText>
+
           <SVGLines isVisible={isVisible} />
         </div>
       </section>

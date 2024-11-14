@@ -21,16 +21,17 @@ const SVGLines = ({ isVisible }) => {
         const scrollProgress =
           (window.innerHeight - containerRect.top) / containerRect.height;
 
-        if (scrollProgress >= 0 && scrollProgress <= 1) {
-          const drawLength = pathLength * scrollProgress;
-          path.style.strokeDashoffset = pathLength - drawLength;
-        } else if (scrollProgress > 1) {
-          path.style.strokeDashoffset = 0;
-        } else {
-          path.style.strokeDashoffset = pathLength;
+          if (scrollProgress >= 0 && scrollProgress <= 1) {
+            const drawLength = pathLength * scrollProgress;
+            console.log(drawLength,"drawLength")
+            path.style.strokeDashoffset = pathLength - drawLength;
+          } else if (scrollProgress > 1) {
+            path.style.strokeDashoffset = 0;
+          } else {
+            path.style.strokeDashoffset = pathLength;
+          }
         }
-      }
-    };
+      };
 
     window.addEventListener("scroll", handleScroll);
 
