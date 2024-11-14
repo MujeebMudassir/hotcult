@@ -14,6 +14,7 @@ const Home = () => {
   const [transformOrigin, setTransformOrigin] = useState("left bottom");
   const containerRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -32,6 +33,7 @@ const Home = () => {
       }
     };
   }, []);
+
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -61,7 +63,7 @@ const Home = () => {
     { text: "I", image: chennaiBG },
   ];
 
-  const lastLetterDelay = (text.length - 1) * 200;
+  const lastLetterDelay = (text.length - 1) * 150;
   const shouldExpandSecondSection = scrollPosition > lastLetterDelay;
 
   useEffect(() => {
@@ -127,13 +129,33 @@ const Home = () => {
           </h1>
         </div>
       </section>
-      <section
-        className={` h-[100vh] z-10 bg-cover transition-transform duration-700 ${
-          shouldExpandSecondSection ? "scale-100" : "scale-0"
+
+      {/* Extra Div for "I" */}
+      {/* <div
+        className={`letter-i-container h-[100vh] fixed bottom-0 left-0 w-full  transition-all duration-700 ${
+          scrollPosition > lastLetterDelay ? "scale-100 opacity-100" : "scale-0 opacity-0"
         }`}
         style={{
-          backgroundImage: `url('${chennaiBG}')`,
-          transformOrigin: transformOrigin,
+          backgroundImage: `url(${chennaiBG})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          transformOrigin: transformOrigin, // Apply the dynamic origin
+          // transform: `translateY(${scrollPosition > lastLetterDelay ? "0vh" : "0"})`,
+          zIndex: 21,
+        }}
+      ></div> */}
+
+      <section
+        className={`letter-i-container h-[100vh] fixed bottom-0 left-0 w-full  transition-all duration-1000 ${
+          scrollPosition > lastLetterDelay ? "scale-100 opacity-100" : "scale-0 opacity-0"
+        }`}
+        style={{
+          backgroundImage: `url(${chennaiBG})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          transformOrigin: transformOrigin, // Apply the dynamic origin
+          // transform: `translateY(${scrollPosition > lastLetterDelay ? "0vh" : "0"})`,
+          zIndex: 21,
         }}
       >
         <div
@@ -141,9 +163,9 @@ const Home = () => {
           className="p-5 text-white relative h-[100%] w-[100%]"
           style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
         >
-          <SVGText isVisible={isVisible}></SVGText>
+          <SVGText isVisible={scrollPosition > lastLetterDelay}></SVGText>
 
-          <SVGLines isVisible={isVisible} />
+          <SVGLines isVisible={scrollPosition > lastLetterDelay} />
         </div>
       </section>
     </div>
