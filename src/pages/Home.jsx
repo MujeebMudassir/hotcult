@@ -77,7 +77,7 @@ const Home = () => {
 
   return (
     <div>
-      <section className="relative h-[200vh] bg-cover bg-center bg-fixed">
+      <section className="relative h-[200vh] bg-cover bg-center bg-fixed -z-10">
         <div className="fixed top-10 w-full flex justify-center">
           <img className="self-center w-[200px]" src={Logo} alt="Logo" />
         </div>
@@ -129,45 +129,32 @@ const Home = () => {
           </h1>
         </div>
       </section>
-
-      {/* Extra Div for "I" */}
-      {/* <div
-        className={`letter-i-container h-[100vh] fixed bottom-0 left-0 w-full  transition-all duration-700 ${
-          scrollPosition > lastLetterDelay ? "scale-100 opacity-100" : "scale-0 opacity-0"
-        }`}
-        style={{
-          backgroundImage: `url(${chennaiBG})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          transformOrigin: transformOrigin, // Apply the dynamic origin
-          // transform: `translateY(${scrollPosition > lastLetterDelay ? "0vh" : "0"})`,
-          zIndex: 21,
-        }}
-      ></div> */}
-
       <section
-        className={`letter-i-container h-[100vh] fixed bottom-0 left-0 w-full  transition-all duration-1000 ${
-          scrollPosition > lastLetterDelay ? "scale-100 opacity-100" : "scale-0 opacity-0"
-        }`}
-        style={{
-          backgroundImage: `url(${chennaiBG})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          transformOrigin: transformOrigin, // Apply the dynamic origin
-          // transform: `translateY(${scrollPosition > lastLetterDelay ? "0vh" : "0"})`,
-          zIndex: 21,
-        }}
-      >
-        <div
-          ref={containerRef}
-          className="p-5 text-white relative h-[100%] w-[100%]"
-          style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
-        >
-          <SVGText isVisible={scrollPosition > lastLetterDelay}></SVGText>
-
-          <SVGLines isVisible={scrollPosition > lastLetterDelay} />
-        </div>
-      </section>
+  className={`letter-i-container h-[100vh] sticky bottom-0 left-0 w-full transition-all duration-1000 ${
+    scrollPosition > lastLetterDelay ? "scale-100 opacity-100 z-20" : "scale-0 opacity-0 -z-10"
+  }`}
+  style={{
+    backgroundImage: `url(${chennaiBG})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    transformOrigin: transformOrigin,
+  }}
+>
+  <div
+    ref={containerRef}
+    className="p-5 text-white relative h-[100%] w-[100%]"
+    style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
+  >
+    <SVGText isVisible={scrollPosition > lastLetterDelay}></SVGText>
+    <SVGLines isVisible={scrollPosition > lastLetterDelay} />
+  </div>
+</section>
+{/* <section className="h-[100vh] bg-red-300 z-20">
+</section>
+<section className="h-[100vh] bg-yellow-400 z-20">
+</section>
+<section className="h-[100vh] bg-pink-500 z-20">
+</section> */}
     </div>
   );
 };
