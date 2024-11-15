@@ -2,47 +2,35 @@ import React, { useEffect, useRef, useState } from "react";
 import hyderabad from "../assets/hyderabadBG.jpg";
 import cloud from "../assets/cloud.webp";
 import main from "../assets/main.webp";
-import Logo from "../assets/LogoWhite.png";
+import Logo from "../assets/Hotcult-Logo.png";
 import chennaiBG from "../assets/chennaiBG.png";
 import SVGLines from "../components/SVGLines";
 import SVGText from "../components/SVGText";
-import mexicoImg from "../assets/mexico.png";
-import hyderabadImage from "../assets/hyderabadpng.png";
+
 const Home = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const lastLetterRef = useRef(null); // Reference for the last letter
   const [transformOrigin, setTransformOrigin] = useState("left bottom");
   const containerRef = useRef(null);
+  const [elementSize, setElementSize] = useState({});
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Create an Intersection Observer instance
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-          } else {
-            setIsVisible(false);
-          }
-        });
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
       },
-      {
-        threshold: 0.5, // Trigger when 50% of the section is in view
-      }
+      { threshold: 0.1 }
     );
 
-    // Observe the section
-    const sectionElement = document.getElementById("scaled-section");
-    if (sectionElement) {
-      observer.observe(sectionElement);
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
     }
 
     return () => {
-      // Cleanup the observer on component unmount
-      if (sectionElement) {
-        observer.unobserve(sectionElement);
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
       }
     };
   }, []);
@@ -80,26 +68,26 @@ const Home = () => {
   const shouldExpandSecondSection = scrollPosition > lastLetterDelay;
 
   useEffect(() => {
-    if (lastLetterRef.current) {
+    if (lastLetterRef.current && scrollPosition <= lastLetterDelay) {
       const rect = lastLetterRef.current.getBoundingClientRect();
       const originX = rect.left + rect.width / 2;
       const originY = rect.top + rect.height / 2;
       setTransformOrigin(`${originX}px ${originY}px`);
+      setElementSize({ width: rect.width, height: rect.height });
     }
   }, [scrollPosition, windowWidth]);
 
+  console.log(transformOrigin);
   return (
     <div>
-      <section className="relative h-[300vh] bg-cover bg-center bg-fixed -z-10" style={{
-        background: "linear-gradient(112.1deg, rgb(32, 38, 57) 11.4%, rgb(63, 76, 119) 70.2%)"
-      }}>
+      <section className="relative h-[200vh] bg-cover bg-center bg-fixed -z-10">
         <div className="fixed top-10 w-full flex justify-center">
           <img className="self-center w-[200px]" src={Logo} alt="Logo" />
         </div>
 
         <div className="fixed bottom-0 left-0 flex items-center justify-center w-full">
           <h1
-            className="text-white font-[900] opacity-80 flex w-[100vw] justify-between"
+            className="text-black font-[900] opacity-80 flex w-[100vw] justify-between"
             style={{
               fontSize: getTextSize(),
             }}
@@ -123,7 +111,7 @@ const Home = () => {
                 backgroundPosition: "center",
                 display: "inline-block",
                 WebkitBackgroundClip: scrollPosition > delay ? "text" : "none",
-                color: scrollPosition > delay ? "transparent" : "white",
+                color: scrollPosition > delay ? "transparent" : "black",
                 padding: "0 5px",
                 width: "auto",
                 height: "auto",
@@ -135,7 +123,7 @@ const Home = () => {
                 <span
                   key={index}
                   ref={letter.text === "I" ? lastLetterRef : null}
-                  style={letterStyle}
+                  style={{ ...letterStyle }}
                 >
                   {letter.text}
                 </span>
@@ -143,41 +131,36 @@ const Home = () => {
             })}
           </h1>
         </div>
-        <section
-          className={`letter-i-container h-[100vh] sticky bottom-0 left-0 w-full transition-all duration-1000 ${
-            scrollPosition > lastLetterDelay
-              ? "scale-100 opacity-100 z-20"
-              : "scale-0 opacity-0 -z-10"
-          }`}
-          style={{
-            backgroundImage: `url(${chennaiBG})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            transformOrigin: transformOrigin,
-          }}
-        >
-          <div
-            ref={containerRef}
-            className="p-5 text-white relative h-[100%] w-[100%]"
-            style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
-          >
-            <SVGText isVisible={scrollPosition > lastLetterDelay}></SVGText>
-            <SVGLines isVisible={scrollPosition > lastLetterDelay} />
-          </div>
-        </section>
       </section>
-
       <section
-        id="scaled-section"
-        className={`h-[100vh] w-[100%] ${
-          isVisible ? "scale-100 opacity-100" : "scale-0 opacity-0"
-        } transform transition-all duration-700 ease-in-out`}
+        className={`letter-i-container sticky bottom-0 left-0 transition-all duration-1000 ${
+          scrollPosition > lastLetterDelay ? `opacity-100 z-20` : `z-0`
+        }`}
+        style={{
+          backgroundImage: `url(${chennaiBG})`,
+          backgroundSize: "cover",
+          height:
+            scrollPosition > lastLetterDelay
+              ? "100vh"
+              : `${elementSize.height - 100}px`,
+          width:
+            scrollPosition > lastLetterDelay
+              ? "100vw"
+              : `${elementSize.width - 0}px`,
+          transformOrigin: scrollPosition > lastLetterDelay && transformOrigin, // Calculated based on the last letter
+          transition: "all 1s ease-out",
+          // transformOrigin: "1418.1171875px 807px",
+          transform: "scale(1)", // Test scaling to ensure the origin is correct
+        }}
       >
-        <img
-          className="h-[100%] w-[100%] object-fill"
-          src={"https://esdy.in/hotcult-do-not-delete.jpg"}
-          alt="mexico img"
-        />
+        <div
+          ref={containerRef}
+          className="p-5 text-white relative h-[100%] w-[100%]"
+          style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
+        >
+          <SVGText isVisible={scrollPosition > lastLetterDelay}></SVGText>
+          <SVGLines isVisible={scrollPosition > lastLetterDelay} />
+        </div>
       </section>
     </div>
   );

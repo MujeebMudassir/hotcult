@@ -15,3 +15,22 @@
   font-weight: 900 !important;
   font-style: normal !important;
 }
+
+@keyframes animateText {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate {
+  animation: animateText 0.3s ease-in-out forwards;
+}
+.letter-i-container {
+  position: fixed; /* Ensure it uses the viewport for coordinates */
+  overflow: visible; /* Prevent clipping of the transform effects */
+}
